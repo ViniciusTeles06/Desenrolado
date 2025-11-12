@@ -34,7 +34,8 @@ https://trello.com/b/jyAGxS42/lista-de-tarefas-cc
 
 # Diagrama de Classes
 
-![Imagem do WhatsApp de 2025-11-11 à(s) 21 27 40_a814fba4](https://github.com/user-attachments/assets/69099bc6-d79f-4cb1-a8de-e9a248e771e2)
+![Imagem do WhatsApp de 2025-11-12 à(s) 20 21 48_67e6ccbf](https://github.com/user-attachments/assets/f0df647f-1c1f-469a-b4d8-b9dc8bdefdd2)
+
 
 # Diagrama de casos de uso
 
