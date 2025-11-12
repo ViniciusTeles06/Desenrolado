@@ -1,22 +1,26 @@
 import os
+import json
 
-tarefas = []
+arquivo_tarefas = "tarefas.json"
+tarefas = {}
 
 def carregar_tarefas():
-    if os.path.exists("tarefas.txt"):
-        with open("tarefas.txt", "r", encoding="utf-8") as arquivo:
-            for linha in arquivo:
-                tarefas.append(linha.strip())
+    global tarefas
+    if os.path.exists(arquivo_tarefas):
+        with open(arquivo_tarefas, "r", encoding="utf-8") as arquivo:
+            tarefas = json.load(arquivo)
+    else:
+        tarefas = {}
 
 def salvar_tarefas():
-    with open("tarefas.txt", "w", encoding="utf-8") as arquivo:
-        for tarefa in tarefas:
-            arquivo.write(tarefa + "\n")
+    with open(arquivo_tarefas, "w", encoding="utf-8") as arquivo:
+        json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
+        # dump é pra colocar coisa no arquivo
 
 def adicionar_tarefa():
     tarefa = input("Digite a tarefa: ").strip()
     if tarefa:
-        tarefas.append(tarefa)
+        tarefas[tarefa] = {"feito": False}
         salvar_tarefas()
         print("Tarefa adicionada com sucesso!")
     else:
@@ -27,8 +31,9 @@ def listar_tarefas():
         print("Nenhuma tarefa na lista.")
     else:
         print("\n--- Lista de Tarefas ---")
-        for i, tarefa in enumerate(tarefas, 1):
-            print(f"{i}. {tarefa}")
+        for i, (tarefa, dados) in enumerate(tarefas.items(), 1):
+            status = "(feito)" if dados["feito"] else "(não feito)"
+            print(f"{i}. {status} - {tarefa}")
 
 def remover_tarefa():
     listar_tarefas()
@@ -36,9 +41,27 @@ def remover_tarefa():
         try:
             num = int(input("Digite o número da tarefa que deseja remover: "))
             if 1 <= num <= len(tarefas):
-                removida = tarefas.pop(num - 1)
+                chave = list(tarefas.keys())[num - 1]
+                tarefas.pop(chave)
                 salvar_tarefas()
-                print(f"Tarefa '{removida}' removida com sucesso!")
+                print(f"Tarefa '{chave}' removida com sucesso!")
+            else:
+                print("Número inválido.")
+        except ValueError:
+            print("Digite um número válido.")
+
+def alternar_status_tarefa():
+    listar_tarefas()
+    if tarefas:
+        try:
+            num = int(input("Digite o número da tarefa que deseja marcar/desmarcar: "))
+            if 1 <= num <= len(tarefas):
+                chave = list(tarefas.keys())[num - 1]
+                tarefas[chave]["feito"] = not tarefas[chave]["feito"]
+                salvar_tarefas()
+                
+                status = "feita" if tarefas[chave]["feito"] else "não feita"
+                print(f"Tarefa '{chave}' marcada como {status}!")
             else:
                 print("Número inválido.")
         except ValueError:
@@ -52,7 +75,8 @@ while True:
     print("1. Adicionar tarefa")
     print("2. Listar tarefas")
     print("3. Remover tarefa")
-    print("4. Sair")
+    print("4. Alternar status (feito/não feito)")
+    print("5. Sair")
 
     opcao = input("Opção: ")
 
@@ -63,7 +87,10 @@ while True:
     elif opcao == '3':
         remover_tarefa()
     elif opcao == '4':
+        alternar_status_tarefa()
+    elif opcao == '5':
         print("Saindo do programa...")
         break
     else:
         print("Opção inválida, tente de novo.")
+
