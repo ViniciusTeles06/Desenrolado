@@ -9,9 +9,9 @@
 
 **• Gabriel do nascimento de souza**
 
-**• Heitor luiz**
+**• Heitor luiz Pereira Vasconcelos**
 
-**• Luis davi peidão**
+**• Luis davi peidão Silva**
 
 # Funcionalidades Principais
 
