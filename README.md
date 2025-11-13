@@ -26,7 +26,7 @@
 
 # Trello
 
-![Imagem do WhatsApp de 2025-11-11 à(s) 21 32 00_b8782d4d](https://github.com/user-attachments/assets/bca1d22a-fbbf-437b-b7a7-7ace809be8dc)
+
 
 # Link:
 https://trello.com/b/jyAGxS42/lista-de-tarefas-cc
