@@ -26,6 +26,7 @@
 
 # Trello
 
+<img width="1280" height="677" alt="image" src="https://github.com/user-attachments/assets/4eadd137-4dcb-4542-8dba-54acd743acd1" />
 
 
 # Link:
