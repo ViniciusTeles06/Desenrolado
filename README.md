@@ -39,7 +39,8 @@ https://trello.com/b/jyAGxS42/lista-de-tarefas-cc
 
 # Diagrama de casos de uso
 
-![Imagem do WhatsApp de 2025-11-11 à(s) 21 39 35_867f2d49](https://github.com/user-attachments/assets/a6b20b04-3a20-466f-81a5-911116f2f6b1)
+![Imagem do WhatsApp de 2025-11-12 à(s) 21 01 19_fd6cd0f6](https://github.com/user-attachments/assets/a398d249-e44e-4a6f-b577-0a8e5cad3cd6)
+
 
 # Tecnologias Utilizadas
 **•	Linguagem: Python (modo console)**
