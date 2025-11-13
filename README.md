@@ -3,15 +3,15 @@
 **Sistema desenvolvido em Python para gerenciamento básico de tarefas. A aplicação permite registrar novas atividades, exibir a lista completa de tarefas cadastradas, remover itens selecionados e encerrar o programa de forma simples e objetiva. O foco é oferecer uma ferramenta direta, funcional e fácil de utilizar no dia a dia.**
 # Criadores
 
-**• Vinicius teles dos santos silva**
+**• Vinicius teles dos santos silva -Back-End**
 
-**• Matheus de souza castro**
+**• Matheus de souza castro -Back-End**
 
-**• Gabriel do nascimento de souza**
+**• Gabriel do nascimento de souza -Front-End**
 
-**• Heitor luiz Pereira Vasconcelos**
+**• Heitor luiz Pereira Vasconcelos -Scrumm-Master**
 
-**• Luis davi peidão Silva**
+**• Luis davi peidão Silva -Front-End**
 
 # Funcionalidades Principais
 
