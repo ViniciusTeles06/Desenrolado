@@ -44,11 +44,11 @@ https://trello.com/b/jyAGxS42/lista-de-tarefas-cc
 
 
 # Tecnologias Utilizadas
-**•	Linguagem: Python (modo console)**
+**•	Linguagem: Python, Html e Css**
 
-**•	Persistência: arquivo texto tarefas.txt**
+**•	Persistência: Arquivo para o Json**
 
-**•	Bibliotecas padrão: os**
+**•	Bibliotecas padrão: JSON, os e Flask**
   
 # Estrutura de Dados
 
