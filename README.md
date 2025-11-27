@@ -154,5 +154,14 @@ Foi testado o funcionamento completo da aplicação via navegador:
 ✓ Projeto revisado e documentado  
 
 ---
+## Diagrama de Classes
+
+![Imagem do WhatsApp de 2025-11-26 à(s) 23 03 55_313b7c96](https://github.com/user-attachments/assets/484d01a6-0a57-4cad-8f28-b530c0c06b2e)
+
+---
+
+## Diagrama de casos de uso
+
+![Imagem do WhatsApp de 2025-11-26 à(s) 22 51 22_3b5030e2](https://github.com/user-attachments/assets/72b67354-c867-44c5-8cdc-2119b0b30497)
 
 **Projeto desenvolvido como parte da disciplina de Engenharia de Software / Desenvolvimento Web — UNINASSAU**
