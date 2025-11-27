@@ -164,4 +164,6 @@ Foi testado o funcionamento completo da aplicação via navegador:
 
 ![Imagem do WhatsApp de 2025-11-26 à(s) 22 51 22_3b5030e2](https://github.com/user-attachments/assets/72b67354-c867-44c5-8cdc-2119b0b30497)
 
+## Trello: https://trello.com/b/jyAGxS42/lista-de-tarefas-cc
+
 **Projeto desenvolvido como parte da disciplina de Engenharia de Software / Desenvolvimento Web — UNINASSAU**
