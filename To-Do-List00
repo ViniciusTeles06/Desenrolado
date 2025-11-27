@@ -1,162 +1,80 @@
+from flask import Flask, render_template, request, redirect, url_for
 import json
 import os
-import tempfile
-from pathlib import Path
-from typing import List, Dict, Any, Optional
 
-ARQUIVO_TAREFAS = Path("tarefas.json")
+app = Flask(_name_)
+ARQUIVO_TAREFAS = "tarefas.json"
 
-
-def carregar_tarefas() -> List[Dict[str, Any]]:
-    """Carrega a lista de tarefas do arquivo. Retorna lista vazia em caso de erro."""
-    if not ARQUIVO_TAREFAS.exists():
-        return []
-    try:
-        with ARQUIVO_TAREFAS.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-            if isinstance(data, list):
-                return data
-            # compat: se for dict (antiga versão), converte para lista
-            if isinstance(data, dict):
-                return [
-                    {"id": idx + 1, "descricao": k, "feito": bool(v.get("feito", False))}
-                    for idx, (k, v) in enumerate(data.items())
-                ]
-    except json.JSONDecodeError:
-        print("Aviso: arquivo de tarefas corrompido. Iniciando com lista vazia.")
-    except Exception as e:
-        print(f"Erro ao carregar tarefas: {e}")
+def carregar_tarefas():
+    if os.path.exists(ARQUIVO_TAREFAS):
+        with open(ARQUIVO_TAREFAS, "r", encoding="utf-8") as f:
+            return json.load(f)
     return []
 
+def salvar_tarefas(tarefas):
+    with open(ARQUIVO_TAREFAS, "w", encoding="utf-8") as f:
+        json.dump(tarefas, f, indent=4, ensure_ascii=False)
 
-def salvar_tarefas(tarefas: List[Dict[str, Any]]) -> None:
-    """Salva de forma atômica a lista de tarefas no arquivo JSON."""
-    tmp_fd, tmp_path = tempfile.mkstemp(prefix="tarefas_", suffix=".json", dir=".")
-    try:
-        with os.fdopen(tmp_fd, "w", encoding="utf-8") as tmp_file:
-            json.dump(tarefas, tmp_file, ensure_ascii=False, indent=4)
-        os.replace(tmp_path, ARQUIVO_TAREFAS)  # atomic replace
-    except Exception as e:
-        print(f"Erro ao salvar tarefas: {e}")
-        # tentar remover o tmp se existir
-        try:
-            if os.path.exists(tmp_path):
-                os.remove(tmp_path)
-        except Exception:
-            pass
+@app.route('/')
+def index():
+    filtro_categoria = request.args.get("categoria", "")
+    filtro_status = request.args.get("status", "")
 
-
-def proximo_id(tarefas: List[Dict[str, Any]]) -> int:
-    if not tarefas:
-        return 1
-    return max(t["id"] for t in tarefas) + 1
-
-
-def adicionar_tarefa(tarefas: List[Dict[str, Any]]) -> None:
-    descricao = input("Digite a tarefa: ").strip()
-    if not descricao:
-        print("Tarefa inválida, tente novamente.")
-        return
-    tid = proximo_id(tarefas)
-    tarefas.append({"id": tid, "descricao": descricao, "feito": False})
-    salvar_tarefas(tarefas)
-    print("Tarefa adicionada com sucesso!")
-
-
-def listar_tarefas(tarefas: List[Dict[str, Any]]) -> None:
-    if not tarefas:
-        print("Nenhuma tarefa na lista.")
-        return
-    feitas = sum(1 for t in tarefas if t["feito"])
-    print(f"\n--- Lista de Tarefas (total: {len(tarefas)} | feitas: {feitas}) ---")
-    for i, t in enumerate(tarefas, start=1):
-        status = "(feito)" if t["feito"] else "(não feito)"
-        print(f"{i}. {status} - [{t['id']}] {t['descricao']}")
-
-
-def _selecionar_por_numero(tarefas: List[Dict[str, Any]], prompt: str) -> Optional[int]:
-    """Retorna o índice (0-based) selecionado ou None."""
-    if not tarefas:
-        print("Lista vazia.")
-        return None
-    try:
-        num = int(input(prompt))
-    except ValueError:
-        print("Digite um número válido.")
-        return None
-    if 1 <= num <= len(tarefas):
-        return num - 1
-    print("Número inválido.")
-    return None
-
-
-def remover_tarefa(tarefas: List[Dict[str, Any]]) -> None:
-    listar_tarefas(tarefas)
-    idx = _selecionar_por_numero(tarefas, "Digite o número da tarefa que deseja remover: ")
-    if idx is None:
-        return
-    tarefa = tarefas.pop(idx)
-    salvar_tarefas(tarefas)
-    print(f"Tarefa '{tarefa['descricao']}' removida com sucesso!")
-
-
-def alternar_status_tarefa(tarefas: List[Dict[str, Any]]) -> None:
-    listar_tarefas(tarefas)
-    idx = _selecionar_por_numero(tarefas, "Digite o número da tarefa que deseja marcar/desmarcar: ")
-    if idx is None:
-        return
-    tarefas[idx]["feito"] = not tarefas[idx]["feito"]
-    salvar_tarefas(tarefas)
-    status = "feita" if tarefas[idx]["feito"] else "não feita"
-    print(f"Tarefa '{tarefas[idx]['descricao']}' marcada como {status}!")
-
-
-def editar_tarefa(tarefas: List[Dict[str, Any]]) -> None:
-    listar_tarefas(tarefas)
-    idx = _selecionar_por_numero(tarefas, "Digite o número da tarefa que deseja editar: ")
-    if idx is None:
-        return
-    nova = input("Digite a nova descrição (deixe em branco para cancelar): ").strip()
-    if not nova:
-        print("Edição cancelada.")
-        return
-    tarefas[idx]["descricao"] = nova
-    salvar_tarefas(tarefas)
-    print("Tarefa atualizada com sucesso!")
-
-
-def mostrar_menu() -> None:
-    print("\nEscolha uma opção:")
-    print("1. Adicionar tarefa")
-    print("2. Listar tarefas")
-    print("3. Remover tarefa")
-    print("4. Alternar status (feito/não feito)")
-    print("5. Editar tarefa")
-    print("6. Sair")
-
-
-def main() -> None:
     tarefas = carregar_tarefas()
     
-    while True:
-        mostrar_menu()
-        opcao = input("Opção: ").strip()
-        if opcao == '1':
-            adicionar_tarefa(tarefas)
-        elif opcao == '2':
-            listar_tarefas(tarefas)
-        elif opcao == '3':
-            remover_tarefa(tarefas)
-        elif opcao == '4':
-            alternar_status_tarefa(tarefas)
-        elif opcao == '5':
-            editar_tarefa(tarefas)
-        elif opcao == '6':
-            print("Saindo do programa...")
+    # Aplicar filtros
+    lista_filtrada = []
+    for t in tarefas:
+        if filtro_categoria and filtro_categoria.lower() not in t.get("categoria","").lower():
+            continue
+        if filtro_status == "feito" and not t.get("feito"):
+            continue
+        if filtro_status == "nao_feito" and t.get("feito"):
+            continue
+        lista_filtrada.append(t)
+    
+    return render_template("index.html", tarefas=lista_filtrada, filtro_categoria=filtro_categoria, filtro_status=filtro_status)
+
+@app.route('/adicionar', methods=['POST'])
+def adicionar():
+    tarefas = carregar_tarefas()
+    descricao = request.form.get("tarefa", "").strip()
+    categoria = request.form.get("categoria", "").strip()
+    if descricao:
+        novo_id = str(int(max([t["id"] for t in tarefas], default="0")) + 1) if tarefas else "1"
+        tarefas.append({"id": novo_id, "descricao": descricao, "feito": False, "categoria": categoria})
+        salvar_tarefas(tarefas)
+    return redirect(url_for("index"))
+
+@app.route('/remover/<id>', methods=['POST'])
+def remover(id):
+    tarefas = carregar_tarefas()
+    tarefas = [t for t in tarefas if str(t["id"]) != str(id)]
+    salvar_tarefas(tarefas)
+    return redirect(url_for("index"))
+
+@app.route('/alternar/<id>', methods=['POST'])
+def alternar(id):
+    tarefas = carregar_tarefas()
+    for t in tarefas:
+        if str(t["id"]) == str(id):
+            t["feito"] = not t["feito"]
             break
-        else:
-            print("Opção inválida, tente de novo.")
+    salvar_tarefas(tarefas)
+    return redirect(url_for("index"))
 
+# NOVA ROTA: Editar tarefa
+@app.route('/editar/<id>', methods=['POST'])
+def editar(id):
+    tarefas = carregar_tarefas()
+    nova_descricao = request.form.get("nova_descricao", "").strip()
+    if nova_descricao:
+        for t in tarefas:
+            if str(t["id"]) == str(id):
+                t["descricao"] = nova_descricao
+                break
+        salvar_tarefas(tarefas)
+    return redirect(url_for("index"))
 
-if __name__ == "__main__":
-    main()
+if _name_ == "_main_":
+    app.run(debug=True)
