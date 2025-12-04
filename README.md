@@ -54,9 +54,10 @@ Valores possíveis: `"pendente", "concluída"`
 
 ## Comportamento no Código
 
-• `adicionar_tarefa` cria nova tarefa com status **"pendente"**  
+• `adicionar_tarefa` cria nova tarefa com status 
 • `atualizar_status` modifica o status de uma tarefa existente  
 • `remover_tarefa` apaga a tarefa do JSON  
+* `filtrar_e_adicionar_categorias` Filtra as categorias ou adiciona uma categoria
 
 
 ---
@@ -156,14 +157,32 @@ Foi testado o funcionamento completo da aplicação via navegador:
 ---
 ## Diagrama de Classes
 
-![Imagem do WhatsApp de 2025-11-26 à(s) 23 03 55_313b7c96](https://github.com/user-attachments/assets/484d01a6-0a57-4cad-8f28-b530c0c06b2e)
+![Imagem do WhatsApp de 2025-12-03 à(s) 22 41 01_7ca0ceff](https://github.com/user-attachments/assets/90394540-3020-4b49-ab21-6c2cffe80e28)
+
 
 ---
 
 ## Diagrama de casos de uso
 
-![Imagem do WhatsApp de 2025-11-26 à(s) 22 51 22_3b5030e2](https://github.com/user-attachments/assets/72b67354-c867-44c5-8cdc-2119b0b30497)
+![Imagem do WhatsApp de 2025-12-03 à(s) 22 35 25_637f3a45](https://github.com/user-attachments/assets/fb13f1f6-616e-49a4-941b-ee817e4a69c1)
 
+
+---
+
+## Diagramas de Sequência
+
+![Imagem do WhatsApp de 2025-12-03 à(s) 22 35 26_1681400a](https://github.com/user-attachments/assets/ab7e2b9c-ce9c-427a-b88f-eee4dd5fdf38)
+![Imagem do WhatsApp de 2025-12-03 à(s) 22 35 26_5b00fc73](https://github.com/user-attachments/assets/df025491-ae93-4fa6-bf78-3ef4d1e09609)
+
+
+---
+
+## Diagrama de Atividade
+
+![Imagem do WhatsApp de 2025-12-03 à(s) 23 35 04_811acd25](https://github.com/user-attachments/assets/4d7f7293-0a14-4815-bf49-9f7b29ca8d4b)
+
+
+---
 ## Trello: https://trello.com/b/jyAGxS42/lista-de-tarefas-cc
 
 **Projeto desenvolvido como parte da disciplina de Engenharia de Software / Desenvolvimento Web — UNINASSAU**
