@@ -1,41 +1,38 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lista de tarefas</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de tarefas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <div class="container">
+    <h1>Lista de tarefas</h1>
 
-<h1>Lista de tarefas</h1>
-
-<div id="inicio">
-    <button id="iniciarBtn" class="btn">Iniciar lista de tarefas</button>
-</div>
-
-<div id="lista" class="hidden">
-    <div class="formulario">
-        <input id="novaTarefa" type="text" placeholder="Digite uma tarefa">
-        <input id="categoriaTarefa" type="text" placeholder="Categoria (opcional)">
-        <button id="adicionarBtn" class="btn">Adicionar</button>
+    <div id="inicio">
+        <button id="iniciarBtn" class="btn">Iniciar lista de tarefas</button>
     </div>
 
-    <div class="filtros">
-        <input id="filtroCategoria" type="text" placeholder="Filtrar por categoria">
-        <select id="filtroStatus">
-            <option value="">Todos</option>
-            <option value="feito">Feitas</option>
-            <option value="nao_feito">Não feitas</option>
-        </select>
-        <button id="filtrarBtn" class="btn">Filtrar</button>
-    </div>
+    <div id="lista" class="hidden">
+        <div class="formulario">
+            <input id="novaTarefa" type="text" placeholder="Digite uma tarefa">
+            <input id="categoriaTarefa" type="text" placeholder="Categoria (opcional)">
+            <button id="adicionarBtn" class="btn">Adicionar</button>
+        </div>
 
-    <ul id="taskList"></ul>
-</div>
+        <div class="filtros">
+            <input id="filtroCategoria" type="text" placeholder="Filtrar por categoria">
+            <select id="filtroStatus">
+                <option value="">Todos</option>
+                <option value="feito">Feitas</option>
+                <option value="nao_feito">Não feitas</option>
+            </select>
+            <button id="filtrarBtn" class="btn">Filtrar</button>
+        </div>
+
+        <ul id="taskList"></ul>
+    </div>
 </div>
 
 <script>
@@ -52,9 +49,27 @@ const filtroStatus = document.getElementById("filtroStatus");
 let tarefas = [];
 let proximoId = 1;
 
+// Carregar tarefas do servidor
+async function carregarTarefas() {
+    const response = await fetch('/api/tarefas');
+    tarefas = await response.json();
+    proximoId = tarefas.length > 0 ? Math.max(...tarefas.map(t => t.id)) + 1 : 1;
+    renderizar();
+}
+
+// Salvar tarefas no servidor
+async function salvarTarefas() {
+    await fetch('/api/tarefas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tarefas)
+    });
+}
+
 iniciarBtn.addEventListener("click", () => {
     inicioDiv.classList.add("hidden");
     listaDiv.classList.remove("hidden");
+    carregarTarefas();  // Carregar ao iniciar
 });
 
 function renderizar() {
@@ -82,6 +97,7 @@ function renderizar() {
         btnFeito.textContent = t.feito ? "✔" : "Marcar";
         btnFeito.onclick = () => {
             t.feito = !t.feito;
+            salvarTarefas();  // Salvar ao alterar
             renderizar();
         };
 
@@ -90,6 +106,7 @@ function renderizar() {
         btnRemover.textContent = "✖";
         btnRemover.onclick = () => {
             tarefas = tarefas.filter(task => task.id !== t.id);
+            salvarTarefas();  // Salvar ao remover
             renderizar();
         };
 
@@ -100,6 +117,7 @@ function renderizar() {
             const nova = prompt("Edite a tarefa:", t.descricao);
             if (nova && nova.trim() !== "") {
                 t.descricao = nova;
+                salvarTarefas();  // Salvar ao editar
                 renderizar();
             }
         };
@@ -120,6 +138,7 @@ document.getElementById("adicionarBtn").addEventListener("click", () => {
     if (!desc) return;
     const cat = categoriaInput.value.trim();
     tarefas.push({id: proximoId++, descricao: desc, categoria: cat, feito: false});
+    salvarTarefas();  // Salvar ao adicionar
     novaTarefaInput.value = "";
     categoriaInput.value = "";
     renderizar();
