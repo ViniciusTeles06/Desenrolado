@@ -1,0 +1,69 @@
+import os
+
+tarefas = []
+
+def carregar_tarefas():
+    if os.path.exists("tarefas.txt"):
+        with open("tarefas.txt", "r", encoding="utf-8") as arquivo:
+            for linha in arquivo:
+                tarefas.append(linha.strip())
+
+def salvar_tarefas():
+    with open("tarefas.txt", "w", encoding="utf-8") as arquivo:
+        for tarefa in tarefas:
+            arquivo.write(tarefa + "\n")
+
+def adicionar_tarefa():
+    tarefa = input("Digite a tarefa: ").strip()
+    if tarefa:
+        tarefas.append(tarefa)
+        salvar_tarefas()
+        print("Tarefa adicionada com sucesso!")
+    else:
+        print("Tarefa inválida, tente novamente.")
+
+def listar_tarefas():
+    if not tarefas:
+        print("Nenhuma tarefa na lista.")
+    else:
+        print("\n--- Lista de Tarefas ---")
+        for i, tarefa in enumerate(tarefas, 1):
+            print(f"{i}. {tarefa}")
+
+def remover_tarefa():
+    listar_tarefas()
+    if tarefas:
+        try:
+            num = int(input("Digite o número da tarefa que deseja remover: "))
+            if 1 <= num <= len(tarefas):
+                removida = tarefas.pop(num - 1)
+                salvar_tarefas()
+                print(f"Tarefa '{removida}' removida com sucesso!")
+            else:
+                print("Número inválido.")
+        except ValueError:
+            print("Digite um número válido.")
+
+# Carrega as tarefas salvas antes de começar
+carregar_tarefas()
+
+while True:
+    print("\nEscolha uma opção:")
+    print("1. Adicionar tarefa")
+    print("2. Listar tarefas")
+    print("3. Remover tarefa")
+    print("4. Sair")
+
+    opcao = input("Opção: ")
+
+    if opcao == '1':
+        adicionar_tarefa()
+    elif opcao == '2':
+        listar_tarefas()
+    elif opcao == '3':
+        remover_tarefa()
+    elif opcao == '4':
+        print("Saindo do programa...")
+        break
+    else:
+        print("Opção inválida, tente de novo.")
