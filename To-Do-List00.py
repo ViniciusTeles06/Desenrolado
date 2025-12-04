@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 import json
 import os
 
-app = Flask(_name_)
+app = Flask(__name__)
 ARQUIVO_TAREFAS = "tarefas.json"
 
 def carregar_tarefas():
@@ -17,64 +17,17 @@ def salvar_tarefas(tarefas):
 
 @app.route('/')
 def index():
-    filtro_categoria = request.args.get("categoria", "")
-    filtro_status = request.args.get("status", "")
+    return render_template("index.html")
 
-    tarefas = carregar_tarefas()
-    
-    # Aplicar filtros
-    lista_filtrada = []
-    for t in tarefas:
-        if filtro_categoria and filtro_categoria.lower() not in t.get("categoria","").lower():
-            continue
-        if filtro_status == "feito" and not t.get("feito"):
-            continue
-        if filtro_status == "nao_feito" and t.get("feito"):
-            continue
-        lista_filtrada.append(t)
-    
-    return render_template("index.html", tarefas=lista_filtrada, filtro_categoria=filtro_categoria, filtro_status=filtro_status)
+@app.route('/api/tarefas', methods=['GET'])
+def get_tarefas():
+    return jsonify(carregar_tarefas())
 
-@app.route('/adicionar', methods=['POST'])
-def adicionar():
-    tarefas = carregar_tarefas()
-    descricao = request.form.get("tarefa", "").strip()
-    categoria = request.form.get("categoria", "").strip()
-    if descricao:
-        novo_id = str(int(max([t["id"] for t in tarefas], default="0")) + 1) if tarefas else "1"
-        tarefas.append({"id": novo_id, "descricao": descricao, "feito": False, "categoria": categoria})
-        salvar_tarefas(tarefas)
-    return redirect(url_for("index"))
-
-@app.route('/remover/<id>', methods=['POST'])
-def remover(id):
-    tarefas = carregar_tarefas()
-    tarefas = [t for t in tarefas if str(t["id"]) != str(id)]
+@app.route('/api/tarefas', methods=['POST'])
+def post_tarefas():
+    tarefas = request.get_json()
     salvar_tarefas(tarefas)
-    return redirect(url_for("index"))
+    return jsonify({"status": "success"})
 
-@app.route('/alternar/<id>', methods=['POST'])
-def alternar(id):
-    tarefas = carregar_tarefas()
-    for t in tarefas:
-        if str(t["id"]) == str(id):
-            t["feito"] = not t["feito"]
-            break
-    salvar_tarefas(tarefas)
-    return redirect(url_for("index"))
-
-# NOVA ROTA: Editar tarefa
-@app.route('/editar/<id>', methods=['POST'])
-def editar(id):
-    tarefas = carregar_tarefas()
-    nova_descricao = request.form.get("nova_descricao", "").strip()
-    if nova_descricao:
-        for t in tarefas:
-            if str(t["id"]) == str(id):
-                t["descricao"] = nova_descricao
-                break
-        salvar_tarefas(tarefas)
-    return redirect(url_for("index"))
-
-if _name_ == "_main_":
+if __name__ == "__main__":
     app.run(debug=True)
