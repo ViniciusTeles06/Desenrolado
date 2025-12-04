@@ -185,4 +185,21 @@ Foi testado o funcionamento completo da aplicação via navegador:
 ---
 ## Trello: https://trello.com/b/jyAGxS42/lista-de-tarefas-cc
 
+
+---
+> ## 🚀 Como Rodar o Projeto
+
+1. *Baixe o projeto* clicando em Code → Download ZIP.
+2. *Extraia* todo o conteúdo do arquivo ZIP.
+3. Abra o *Visual Studio Code(VsCode)*
+4. Clique em *File → Open Folder* e selecione a pasta extraída.
+5. Abra o terminal do VsCode (*Ctrl + `*)
+6. Instale o Flask com o comando
+ ```py -m pip install flask```
+7.Execute o projeto usando:
+ ```py app.py```
+8. Abra o navegador e acesse:
+ ```htt://127.0.0.1:5000```
+
+
 **Projeto desenvolvido como parte da disciplina de Engenharia de Software / Desenvolvimento Web — UNINASSAU**
